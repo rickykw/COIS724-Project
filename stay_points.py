@@ -8,7 +8,7 @@ data = glob.glob('Data/002/Trajectory/*.*')
 
 days = [list(open(d, "r")) for d in data]
 days = [d[6:] for d in days]
-
+total_stay_points = 0 # stay points for this user
 for i in range(len(days)):
 
     prev_second = 0
@@ -25,7 +25,7 @@ for i in range(len(days)):
     total_distance = 0
     
     
-    total_stay_points = 0 # stay points for this date
+
     for j in range(len(days[i])):
         days[i][j] = days[i][j].strip('\r\n').split(',')
         x = days[i][j][-1]
@@ -64,5 +64,5 @@ for i in range(len(days)):
             
             
     print "There are %s stay points for this date" % str(total_stay_points)
-    break
+    
      # remove this break if you want to run all the dates for the user
