@@ -3,6 +3,7 @@ import time
 import datetime
 from geopy.distance import vincenty
 
+stay_points_file = open("stay_points.txt", "w")
 
 data = glob.glob('Data/002/Trajectory/*.*')
 
@@ -22,7 +23,11 @@ for i in range(len(days)):
     curr_lat = 0
     curr_long = 0
 
+    total_lat = 0
+    total_long = 0
+    
     total_distance = 0
+    counter = 0
     
     
 
@@ -46,21 +51,45 @@ for i in range(len(days)):
 
         curr_pos = (curr_lat, curr_long)
         start_pos = (start_lat, start_long)
-
+        
+        total_lat += float(curr_lat)
+        total_long += float(curr_long)
+        counter += 1
+        
         total_distance = vincenty(start_pos, curr_pos).meters
+        
 
         if total_seconds  >= 1200 and total_distance <= 200:
+
             print "stay point"
             print "the time is %s %s" % (str((total_seconds) / 60.),  "hours" if ((total_seconds) / 60.) > 60 else "minutes")  
             print "the distance is %s metres" % total_distance
+
+            stay_p_lat = total_lat / counter
+            stay_p_long = total_long / counter
+            
             start_lat = curr_lat
             start_long = curr_long
+
             total_stay_points += 1
+            
             total_seconds = 0
+            total_lat = 0
+            total_long = 0
+            counter = 0
+
+            #save the stay point to a file
+            stay_points_file.write("%s, %s\n" % (str(stay_p_lat), str(stay_p_long)))
+            
         elif total_seconds >= 1200 and total_distance > 200:
             total_seconds = 0
             start_lat = curr_lat
             start_long = curr_long
+
+            total_lat = 0
+            total_long = 0
+            counter = 0
+            
             
             
     print "There are %s stay points for this date" % str(total_stay_points)
