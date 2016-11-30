@@ -2,10 +2,14 @@ import glob
 import time
 import datetime
 from geopy.distance import vincenty
+import sys
 
-stay_points_file = open("stay_points.txt", "w")
+user_id = sys.argv[1]
 
-data = glob.glob('Data/002/Trajectory/*.*')
+
+stay_points_file = open(str(user_id) + ".txt", "w")
+
+data = glob.glob('Data/'+str(user_id)+'/Trajectory/*.*')
 
 days = [list(open(d, "r")) for d in data]
 days = [d[6:] for d in days]
@@ -45,7 +49,9 @@ for i in range(len(days)):
             start_lat = curr_lat
             start_long = curr_long
             
+            
         total_seconds += int(curr_second) - int(prev_second)
+        #print "The time difference is %s and j is %s" % (str(int(curr_second) - int(prev_second)), str(j))
         
         prev_second = curr_second
 
@@ -62,7 +68,7 @@ for i in range(len(days)):
         if total_seconds  >= 1200 and total_distance <= 200:
 
             print "stay point"
-            print "the time is %s %s" % (str((total_seconds) / 60.),  "hours" if ((total_seconds) / 60.) > 60 else "minutes")  
+            print "the time is %s %s" % (str((total_seconds) / 60.),  "minutes" if ((total_seconds) / 60.) > 60 else "minutes")  
             print "the distance is %s metres" % total_distance
 
             stay_p_lat = total_lat / counter
