@@ -77,3 +77,29 @@ for k, v in cluster_dict.iteritems():
 
 for key, value in cluster_centroids.iteritems():
     cluster_centroids_file.write("%s---> %s\n" % (str(key), str(value).strip('[]')))
+
+
+all_users = []
+total_keys = 0
+
+for key, value in cluster_dict.iteritems():
+    all_users.append(cluster_dict[key])
+    if int(key) > total_keys:
+        total_keys = key
+
+total_keys += 1 #bypassing array index out of bounds error
+        
+all_users = [item for sublist in all_users for item in sublist]
+all_users = list(set(all_users))
+matrix = np.zeros((len(all_users), total_keys))
+
+for key, value in cluster_dict.iteritems():
+    matrix[cluster_dict[key], key] += 1
+
+
+matrix = matrix.tolist()
+
+matrix_file = open("matrix.txt", "w")
+
+for line in matrix:
+    matrix_file.write("%s\n" % str(line).strip('[]'))
