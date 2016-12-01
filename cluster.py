@@ -77,7 +77,7 @@ for k, v in cluster_dict.iteritems():
 
 for key, value in cluster_centroids.iteritems():
     cluster_centroids_file.write("%s---> %s\n" % (str(key), str(value).strip('[]')))
-
+'''
 
 all_users = []
 total_keys = 0
@@ -103,3 +103,58 @@ matrix_file = open("matrix.txt", "w")
 
 for line in matrix:
     matrix_file.write("%s\n" % str(line).strip('[]'))
+
+
+'''
+import collections
+
+
+cluster_matrix = {}
+
+for entry in labels:
+    cluster_matrix[entry[1]] = []
+
+
+for entry in labels:
+    cluster_matrix[entry[1]].append(users_list[entry[0]])
+
+cluster_matrix = collections.OrderedDict(sorted(cluster_matrix.items()))
+
+print cluster_matrix
+
+count_matrix = {}
+
+
+all_users = []
+total_keys = 0
+
+for key, value in cluster_dict.iteritems():
+    all_users.append(cluster_dict[key])
+    if int(key) > total_keys:
+        total_keys = key
+
+total_keys += 1 #bypassing array index out of bounds error
+        
+all_users = [item for sublist in all_users for item in sublist]
+all_users = list(set(all_users))
+matrix = np.zeros((len(all_users), total_keys))
+
+mask = []
+
+for k, v in cluster_matrix.iteritems():
+    count_matrix[k] = str(collections.Counter(cluster_matrix[k]))
+    count_matrix[k] = count_matrix[k][7:].strip('({})').split(',')
+    count_matrix[k] = [c_m.split(':') for c_m in count_matrix[k]]
+    for arr in count_matrix[k]:
+        matrix[int(arr[0])][k] = arr[1] 
+   
+
+
+matrix = matrix.tolist()
+
+matrix_file = open("matrix.txt", "w")
+
+for line in matrix:
+    matrix_file.write("%s\n" % str(line).strip('[]'))
+#print count_matrix
+
